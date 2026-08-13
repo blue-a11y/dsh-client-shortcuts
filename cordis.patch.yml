@@ -1,0 +1,7 @@
+# The dsh-client-shortcuts bundle patch: the global keyboard shortcut layer.
+# Registered through `dsh plugin --profile web add` (not in the web-app
+# bundle), so this patch rides the profile's bundle stack as its own layer.
+
+- insert:
+    - id: shortcuts
+      name: '@blue-a11y/dsh-client-shortcuts'
