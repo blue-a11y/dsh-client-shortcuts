@@ -15,16 +15,19 @@ dsh web GUI 的全局键盘快捷键插件。`ShortcutRegistry`（即 `ctx.short
 
 ### 安装
 
-本包是一个**组合包**（声明了 `dsh.bundle`），安装即自动激活其配置层。三选一：
+本包是一个**组合包**（声明了 `dsh.bundle`），安装即自动激活其配置层。**推荐从 npm 安装**（预构建产物，零安装授权）：
 
 ```sh
-# 1) npm 上发布的版本
 dsh plugin --profile web add @blue-a11y/dsh-client-shortcuts
+```
 
-# 2) 本地 checkout（开发期，改源码重建即热更新）
+其他方式：
+
+```sh
+# 本地 checkout（开发期，改源码重建即热更新）
 dsh plugin --profile web add ./dsh-client-shortcuts
 
-# 3) 打包产物 tarball
+# 打包产物 tarball
 dsh plugin --profile web add ./dsh-client-shortcuts-0.1.0.tgz
 ```
 
