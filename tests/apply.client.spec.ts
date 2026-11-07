@@ -210,4 +210,40 @@ describe('shortcuts apply', () => {
     expect(open).toHaveBeenCalledWith('s2')
     await ctx.fiber.dispose()
   })
+
+  it('boss-toggle (unbound by default) hides via the official shortcuts bridge when present', async () => {
+    const closeSpy = vi.spyOn(window, 'close').mockImplementation(() => {})
+    try {
+      const ctx = await mount()
+      // Unbound by default: no key reacts, nothing closes.
+      expect(() => window.dispatchEvent(keydown({ key: 'd', ctrlKey: true }))).not.toThrow()
+      expect(closeSpy).not.toHaveBeenCalled()
+      // The action resolves ctx.shortcuts at build time; when the official
+      // service is present (Desktop) closeWindow() is the hide path.
+      const { createActions } = await import('../src/client/actions.tsx')
+      const actions = createActions(ctx)
+      const boss = actions.find((a) => a.id === 'boss-toggle')
+      expect(boss).toBeDefined()
+      expect(boss?.defaultCombo).toBe('')
+      // In the bare test context ctx.shortcuts IS the fork's own registry,
+      // which has no closeWindow — the call must swallow that gracefully.
+      expect(() => boss?.run()).not.toThrow()
+      expect(closeSpy).not.toHaveBeenCalled() // never window.close
+      // With the official bridge present, run() goes through closeWindow.
+      const closeWindow = vi.fn().mockResolvedValue(undefined)
+      const actionsWithBridge = createActions(new Proxy(ctx, {
+        get(target, prop) {
+          if (prop === 'get') return (name: string) => name === 'shortcuts' ? { closeWindow } : (target as never as { get(n: string): unknown }).get(name)
+          return Reflect.get(target, prop)
+        },
+      }))
+      const bossWithBridge = actionsWithBridge.find((a) => a.id === 'boss-toggle')
+      bossWithBridge?.run()
+      expect(closeWindow).toHaveBeenCalledTimes(1)
+      expect(closeSpy).not.toHaveBeenCalled()
+      await ctx.fiber.dispose()
+    } finally {
+      closeSpy.mockRestore()
+    }
+  })
 })

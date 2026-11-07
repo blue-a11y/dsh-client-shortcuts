@@ -25,6 +25,7 @@ import {
   IconChevronUpOutline14,
   IconDarkOutline16,
   IconEditOutline16,
+  IconFullscreenOutline16,
   IconInspectOutline12,
   IconNewChatOutline16,
   IconPanelLeftOutline16,
@@ -198,12 +199,38 @@ function scrollTranscript(toEnd: boolean): void {
   el.scrollTo({ top: toEnd ? el.scrollHeight : 0, behavior: 'smooth' })
 }
 
+/**
+ * Boss-toggle the app window through the OFFICIAL shortcuts bridge.
+ *
+ * `ctx.shortcuts.closeWindow()` is the shell-owned close path: on Desktop it
+ * carries the current accepted configuration revision over the native
+ * keyboard bridge (IPC dsh-desktop:shortcuts-close-window), and the shell
+ * interprets the native close as "hide to tray" — the same account the tray
+ * click uses. On Web the call rejects ("Desktop keyboard bridge
+ * unavailable"), which we swallow: the Web GUI has no window to hide.
+ * Waking the window back up stays with the tray or the dsh-bosskey global
+ * hotkey (the shell's dsh://open path).
+ */
+interface ShortcutsBridge {
+  closeWindow(): Promise<unknown>
+}
+
+function bossHideWindow(shortcuts: ShortcutsBridge | undefined): void {
+  const close = (shortcuts as Partial<ShortcutsBridge> | undefined)?.closeWindow
+  if (typeof close !== 'function') return // fork's own registry or absent service: nothing to hide with
+  try {
+    const result = close.call(shortcuts)
+    if (result instanceof Promise) result.catch(() => { /* Web runtime: nothing to hide */ })
+  } catch { /* Web runtime rejects synchronously on some versions */ }
+}
+
 /** Build the action set with handlers bound to the live client services. */
 export function createActions(ctx: Context): ShortcutAction[] {
   const workspaces = ctx.get('workspaces') as WorkspacesFace | undefined
   const sessions = ctx.get('sessions') as SessionsFace | undefined
   const layout = ctx.get('layout') as LayoutFace | undefined
   const theme = ctx.get('theme') as ThemeFace | undefined
+  const officialShortcuts = ctx.get('shortcuts') as ShortcutsBridge | undefined
 
   return [
     {
@@ -293,6 +320,14 @@ export function createActions(ctx: Context): ShortcutAction[] {
         const fork = (sessions as { fork?: (o: { sessionId: string }) => Promise<unknown> } | undefined)?.fork
         if (fork) void fork({ sessionId: current }).catch(() => {})
       },
+    },
+    {
+      id: 'boss-toggle',
+      defaultCombo: '',
+      label: 'Boss 键:隐藏窗口到托盘',
+      allowInTextField: true,
+      icon: <IconFullscreenOutline16 size={16} />,
+      run: () => { bossHideWindow(officialShortcuts) },
     },
   ]
 }
