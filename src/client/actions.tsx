@@ -200,7 +200,7 @@ function scrollTranscript(toEnd: boolean): void {
 }
 
 /**
- * Boss-toggle the app window through the OFFICIAL shortcuts bridge.
+ * Boss-key hide half through the OFFICIAL shortcuts bridge.
  *
  * `ctx.shortcuts.closeWindow()` is the shell-owned close path: on Desktop it
  * carries the current accepted configuration revision over the native
@@ -322,9 +322,9 @@ export function createActions(ctx: Context): ShortcutAction[] {
       },
     },
     {
-      id: 'boss-toggle',
+      id: 'boss-hide',
       defaultCombo: '',
-      label: 'Boss 键:隐藏窗口到托盘',
+      label: '老板键:隐藏窗口到托盘',
       allowInTextField: true,
       icon: <IconFullscreenOutline16 size={16} />,
       run: () => { bossHideWindow(officialShortcuts) },

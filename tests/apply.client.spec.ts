@@ -211,7 +211,7 @@ describe('shortcuts apply', () => {
     await ctx.fiber.dispose()
   })
 
-  it('boss-toggle (unbound by default) hides via the official shortcuts bridge when present', async () => {
+  it('boss-hide (unbound by default) hides via the official shortcuts bridge when present', async () => {
     const closeSpy = vi.spyOn(window, 'close').mockImplementation(() => {})
     try {
       const ctx = await mount()
@@ -222,7 +222,7 @@ describe('shortcuts apply', () => {
       // service is present (Desktop) closeWindow() is the hide path.
       const { createActions } = await import('../src/client/actions.tsx')
       const actions = createActions(ctx)
-      const boss = actions.find((a) => a.id === 'boss-toggle')
+      const boss = actions.find((a) => a.id === 'boss-hide')
       expect(boss).toBeDefined()
       expect(boss?.defaultCombo).toBe('')
       // In the bare test context ctx.shortcuts IS the fork's own registry,
@@ -237,7 +237,7 @@ describe('shortcuts apply', () => {
           return Reflect.get(target, prop)
         },
       }))
-      const bossWithBridge = actionsWithBridge.find((a) => a.id === 'boss-toggle')
+      const bossWithBridge = actionsWithBridge.find((a) => a.id === 'boss-hide')
       bossWithBridge?.run()
       expect(closeWindow).toHaveBeenCalledTimes(1)
       expect(closeSpy).not.toHaveBeenCalled()
