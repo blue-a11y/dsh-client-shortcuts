@@ -208,8 +208,8 @@ function scrollTranscript(toEnd: boolean): void {
  * interprets the native close as "hide to tray" — the same account the tray
  * click uses. On Web the call rejects ("Desktop keyboard bridge
  * unavailable"), which we swallow: the Web GUI has no window to hide.
- * Waking the window back up stays with the tray or the dsh-bosskey global
- * hotkey (the shell's dsh://open path).
+ * Waking the window back up stays with the tray or an OS-level global
+ * hotkey (the shell's dsh://open path); a browser plugin cannot reach the OS window.
  */
 interface ShortcutsBridge {
   closeWindow(): Promise<unknown>
