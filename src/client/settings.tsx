@@ -146,10 +146,6 @@ function readBosskeyPref(): boolean {
  * listener state through the shell. The switch itself is a local preference:
  * it records intent, reminds which entry point to use daily, and does not
  * change how dsh-bosskey runs.
- *
- * Conflict probing against the OS (PowerToys-style transient RegisterHotKey)
- * lives in the dsh-bosskey listener process — `dsh://bosskey/conflict` opens
- * its conflict dialog, which probes a candidate combination natively.
  */
 function BosskeySection(): ReactNode {
   const [enabled, setEnabled] = useState(readBosskeyPref)
@@ -162,10 +158,6 @@ function BosskeySection(): ReactNode {
 
   const openStatus = (): void => {
     try { window.open('dsh://bosskey/status', '_blank') } catch { /* shell not present */ }
-  }
-
-  const openConflict = (): void => {
-    try { window.open('dsh://bosskey/conflict', '_blank') } catch { /* shell not present */ }
   }
 
   return (
@@ -185,8 +177,6 @@ function BosskeySection(): ReactNode {
           <p className="sc-desc">
             已安装并重启桌面端后，按全局热键即完整老板键。查看当前热键与监听器状态：
             <Button variant="ghost" size="sm" onClick={openStatus}>打开 dsh-bosskey 状态页</Button>
-            检查某组合是否被系统/其他应用占用（PowerToys 式试探）：
-            <Button variant="ghost" size="sm" onClick={openConflict}>冲突检测</Button>
             未安装？<code>dsh plugin --profile desktop add github:takomitkm/dsh-bosskey</code>，装完完全退出桌面端再打开。开关状态保存在本浏览器，不影响 dsh-bosskey 本身的运行。
           </p>
         )
