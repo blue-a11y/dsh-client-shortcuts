@@ -1,5 +1,10 @@
 # 快捷键设置页 —— 动态插件原型交接文档
 
+> [!WARNING]
+> **历史动态插件原型，不是当前安装或使用指南。** 下文保留 2026-08-14 的原型代码与验证记录。当前插件已内置“设置 → 快捷键”页，无需再通过 `cordis_define` / `cordis_run` 挂载本原型；安装与改键请看 [README](../README.md)。
+>
+> 文中的默认绑定清单已过时，当前动作与键位以 [`createActions()`](../src/client/actions.tsx) 为准。`mod+k` 和 `mod+shift+c` 已不是默认绑定；`mod+t` 是浏览器保留快捷键，不能照文中的示例作为有效验收。当前设置页的保留键检查见 [`settings.tsx`](../src/client/settings.tsx)。
+
 > 时间：2026-08-14 ｜ 目标机器：blue 的个人电脑
 > 本文件是「设置面板里的快捷键页面」的**动态 Cordis 插件原型**交接：完整代码、挂载步骤、设计要点、下一步计划。
 > 配套档案：`docs/SHORTCUTS-PLUGIN.md`（持久插件开发全程档案）。

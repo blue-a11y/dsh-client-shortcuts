@@ -1,6 +1,6 @@
 {
   "name": "@blue-a11y/dsh-client-shortcuts",
-  "description": "Global keyboard shortcuts plugin for the DeepSeek Harness web GUI: ctx.shortcuts registry service, rebindable settings page, and default mod+l/mod+k/mod+shift+c bindings",
+  "description": "Global keyboard shortcuts for the DeepSeek Harness web GUI: ctx.shortcuts registry, rebindable settings, and default bindings mod+l, mod+shift+k, mod+b, mod+shift+e, mod+[, mod+]",
   "version": "0.1.0",
   "license": "MIT",
   "publishConfig": {
